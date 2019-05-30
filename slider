@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# A Dmenu slider for volume, backlight, ect.
+#
+if [ $1 ]; then
+	printf "%s\n%s" "--" "++" | dmenu
+else
+	printf "++\n--" | dmenu
+fi

@@ -1,0 +1,15 @@
+#!/bin/sh
+# 
+# Search directly from dmenu
+# Requires dmenu, surf
+#
+
+input=$1
+if [ "$input" = "pass" ]; then
+	url=$(~/bin/pass -u)
+	surf $url
+	exit
+fi
+echo $input
+input=$(echo $input | sed -e "s: :+:g")
+surf "start.duckduckgo.com/?q=$input"

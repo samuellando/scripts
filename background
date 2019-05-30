@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# Change the background.
+# Requires feh
+#
+
+# change the background
+feh --bg-scale --randomize ~/Pictures/backgrounds

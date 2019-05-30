@@ -1,0 +1,7 @@
+#!/bin/sh
+#
+# Open the maple app in new document mode.
+# Requires maple.
+#
+
+~/repos/maple/maple2017/bin/xmaple

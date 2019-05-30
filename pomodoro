@@ -1,0 +1,130 @@
+#!/bin/sh
+#
+# Promodoro timer script works with status bar script.
+# Requires: dmenu, notify-send
+#
+
+# times in secounds. 
+brk=300
+work=1500
+warmup=1800
+# directories and files.
+dir="$HOME/.pomodoro"
+startFile="$dir/start"
+stateFile="$dir/state"
+pauseFile="$dir/pause"
+
+# If no command line parameters open dmenu.
+if [ "$1" = "" ]; then
+	selection="$(printf "start\nstop\nbreak\nwarmup\npause" | dmenu)"
+	if [ "$?" != 0 ]; then
+		exit
+	fi
+	if [ "$selection" = "start" ]; then
+		pomodoro start
+		exit
+	fi
+	if [ "$selection" = "stop" ]; then
+		pomodoro stop
+		exit
+	fi
+	if [ "$selection" = "break" ]; then
+		pomodoro start break
+		exit
+	fi
+	if [ "$selection" = "warmup" ]; then
+		pomodoro start warmup
+		exit
+	fi
+	if [ "$selection" = "pause" ]; then
+		pomodoro pause
+		exit
+	fi
+fi
+# Startup and config files.
+if [ "$1" = "start" ]; then
+	if [ -e "$dir" ]; then
+		if [ -e "$startFile" ]; then
+			rm "$startFile"
+		fi
+		if [ -e "$stateFile" ]; then
+			rm "$stateFile"
+		fi
+	else
+		mkdir "$dir"
+	fi
+	touch "$startFile"
+	touch "$stateFile"
+	if [ "$2" = "warmup" ]; then
+		state="warmup"
+	else
+	if [ "$2" = "break" ]; then
+		state="break"
+	else
+		state="work"
+	fi
+	fi
+	st="$(date +%s)"
+	echo $state > "$stateFile"
+	echo $st > "$startFile"
+fi
+if [ "$1" = "stop" ]; then
+	if [ -e "$dir" ]; then
+		rm -r "$dir"
+	fi
+fi
+if [ "$1" = "pause" ]; then
+	if [ -e "$pauseFile" ]; then
+		st="$(cat "$startFile")"
+		pauset="$(cat "$pauseFile")"
+		st="$(( $(date +%s) - $pauset + $st ))"
+		echo $st > "$startFile"
+		rm "$pauseFile"
+	else
+		date +%s > $pauseFile
+	fi
+fi
+
+# Check and return time left, update status as needed.
+if [ -e "$stateFile" ]; then
+	state="$(cat "$stateFile")"
+	if [ -e "$pauseFile" ]; then
+		printf "%s: (paused)" $state
+	else
+		st="$(cat "$startFile")"
+		if [ $state = "warmup" ]; then
+			timeLeft="$(( $warmup + $st - $(date +%s)))"
+			if [ $timeLeft -le 0 ]; then
+				state="work"
+				st="$(date +%s)"
+				timeLeft=$work
+				echo $st > $startFile
+				echo $state > $stateFile
+				notify-send "Pomodoro" "warmup is done"
+			fi
+		fi
+		if [ $state = "break" ]; then
+			timeLeft="$(( $brk + $st - $(date +%s)))"
+			if [ $timeLeft -le 0 ]; then
+				state="work"
+				st="$(date +%s)"
+				timeLeft=$work
+				echo $st > $startFile
+				echo $state > $stateFile
+				notify-send "Pomodoro" "break is done"
+			fi
+		fi
+		if [ $state = "work" ]; then
+			timeLeft="$(( $work + $st - $(date +%s)))"
+			if [ $timeLeft -le 0 ]; then
+				state="break"
+				st="$(date +%s)"
+				timeLeft=$brk
+				echo $st > $startFile
+				echo $state > $stateFile
+				notify-send "Pomodoro" "work is done"
+			fi
+		fi
+		printf "%s: %d:%02d" $state $(( $timeLeft / 60 )) $(( $timeLeft % 60 ))
+	fi
+fi

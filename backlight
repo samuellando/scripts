@@ -1,0 +1,57 @@
+#!/bin/sh
+#
+# A demnu slider for the backlight, uses udev.
+# Requires: dmenu
+#
+
+# How much to increment or decrement by.
+increment=10
+# Flags and variables.
+keepMenu=true 						# If using dmenu, keep the menu open until esc is pressed.
+selection="null"					# The selection form the menu, or the user input.
+backlightDir="/sys/class/backlight/intel_backlight/"	# Where the backlght values are stored.
+brightnessFile="brightness"				# Where the current backlight value is stored.
+maxFile="max_brightness"				# Where the max backlight value is stored.
+# Read the current configurations
+current="$(cat $backlightDir$brightnessFile)"		# Read the current brightness.
+max="$(cat $backlightDir$maxFile)"			# Read the maximum brightness.
+# Main script loop.
+while $keepMenu; do
+	# If commandline arguments are passed, take the first as the selection.	
+	if [ $1 ]; then
+	    selection=$1
+	    keepMenu=false # And dont keep the menu open.
+	else # Otherwise open dmenu slider.
+	    # Based on the previous slection decide the menu order.
+	    if [ $selection = "--" ]; then
+		selection="$(~/bin/slider -r)"
+	    else
+	    	selection="$(~/bin/slider)"
+	    fi
+	    # Check if esc was pressed, and exit.
+	    if [ $? != 0 ]; then
+		    break
+	    fi
+	fi
+	# Calculate the new value.
+	if [ $selection = "++" ]; then
+		if [ $(expr $max - $current) -ge 50 ]; then
+			current="$(expr $current + 50)"
+		else
+			current=$max
+		fi
+	else
+	if [ $selection = "--" ]; then
+		if [ $current -ge 50 ]; then
+				current="$(expr $current - 50)"
+		else
+				current="0"
+		fi
+	else
+			current="$(expr $max / 100)"
+			current="$(expr $max / 100 \* $selection)"
+	fi
+	fi
+	# Do the operation.
+	echo $current > $backlightDir$brightnessFile
+done

@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# DWM customization and status bar.
+# Requires: dmenu
+#
+
+name=""
+volume 0
+bgwait=3600
+bglast=0
+
+while true; do
+	# Check for background change.
+	if [ $(( $(date +%s) - $bglast )) -ge $bgwait ]; then
+		bglast=$( date +%s )
+		background
+	fi
+	pom="$(pomodoro status)"
+	cap="$(if [ "$(xset q | grep 'Caps Lock:   on')" != "" ]; then echo '[CAPS ON]';fi)"
+	bat="$(acpi | grep -E '(1|2|3|4|5|6|7|8|9|0)*%' -o)"
+	wif="$(netctl list | grep '* ' | grep -E '\w*' -o)"
+	# If connected to a vpn.
+	if [ -e "/tmp/nordpid" ]; then
+	       	wif="$wif (VPN)"
+	fi
+	vol="$(amixer get -c 1 Master | grep '\[.*%\]' -o)"
+	dat="$(date +'%Y/%m/%d %A%l:%M %p')"
+	# Check if we need to update name.
+	newName=" $pom $cap B:[$bat] V:$vol W:[$wif] $dat "
+	if [ "$newName" != "$name" ]; then
+		xsetroot -name "$newName"
+		name=$newName
+	fi 
+	sleep 0.1
+done
