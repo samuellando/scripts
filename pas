@@ -11,6 +11,7 @@ if [ $? -ne 0 ]; then
 fi
 name=$(grep ".*<s>" -o passwords.txt | sed -e "s:<s>::g" | dmenu)
 if [ "$?" != 0 ]; then
+	./encrypt
 	exit
 fi
 info=$(grep "^$name<s>" passwords.txt)
