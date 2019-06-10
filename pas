@@ -21,7 +21,7 @@ s=$(echo $info | sed -e "s:.*<u>::g" | sed -e "s:<p>.*::g")
 p=$(echo $info | sed -e "s:.*<p>::g")
 if [ "$#" -ne 0 ]; then
 	echo $url
-	sleep 5
+	exit
 fi
 printf "%s" $s | xclip -selection clipboard -i
 notify-send "pass" "Username coppied to clipboard"
