@@ -2,8 +2,35 @@
 #
 # A Dmenu slider for volume, backlight, ect.
 #
+
 if [ $1 ]; then
-	printf "%s\n%s" "--" "++" | dmenu
+	if [ $(expr $1 + 1) ]; then
+		current=$1
+	else
+		exit
+	fi
 else
-	printf "++\n--" | dmenu
+	current=50
 fi
+
+inc=1
+while [ 1 ]; do
+	if [ $inc = 1 ]; then
+		in="$(printf "%s\n%s\n%s" "++" "--" $current | dmenu)"
+	else
+		in="$(printf "%s\n%s\n%s" "--" "++" $current | dmenu)"
+	fi
+	if [ "$in" = "" ]; then
+		echo $current
+		break
+	fi
+	if [ "$in" = "++" ]; then
+		inc=1
+		current=$(expr $current + 5)
+	elif [ "$in" = "--" ]; then
+		inc=0
+		current=$(expr $current - 5)
+	elif [ $(expr $in + 1) ]; then
+		current=$in
+	fi
+done

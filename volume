@@ -1,39 +1,21 @@
 #!/bin/sh
 #
 # A demnu slider for the volume, uses amixer.
-# Requires: amixed, dmenu
+# Requires: amixer, dmenu
 #
 
-# How much to increment or decrement by.
-increment=10
-# Read argument or prompt.
-keepMenu=true
-selection="null"
-while $keepMenu; do
-	if [ $1 ]; then
-	    selection=$1
-	    keepMenu=false
-	else
-	    if [ $selection = "10%-" ]; then
-		selection="$(~/bin/slider -r)"
-	    else
-	    	selection="$(~/bin/slider)"
-	    fi
-	    # Check if esc was pressed.
-	    if [ $? != 0 ]; then
-		    break
-	    fi
-	fi
-	# Set up as precentage.
-	if [ $selection = "++" ]; then
-	    selection=$increment%+
-	else
-	if [ $selection = "--" ]; then
-	    selection=$increment%-
-	else
-	    selection=$selection%
-	fi
-	fi
-	# Do the operation.
-	amixer -c 1 sset Master $selection
-done
+# Get current volume.
+current=$(amixer -c 1 sget Master | grep "[0123456789]*%" -o | sed -e "s/%//")
+# Get new volume.
+if [ $# -ge 1 ]; then
+	current=$1
+else
+	current=$(slider $current)
+fi
+# Set the new volume.
+if [ $current -le 0 ]; then
+	current=0
+elif [ $current -ge 100]; then
+	current=100
+fi
+amixer -c 1 sset Master $current

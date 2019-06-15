@@ -13,7 +13,7 @@ while true; do
 	# Check for background change.
 	if [ $(( $(date +%s) - $bglast )) -ge $bgwait ]; then
 		bglast=$( date +%s )
-		background
+		background ~/Pictures/backgrounds
 	fi
 	pom="$(pomodoro status)"
 	cap="$(if [ "$(xset q | grep 'Caps Lock:   on')" != "" ]; then echo '[CAPS ON]';fi)"
