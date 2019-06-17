@@ -11,6 +11,7 @@ if [ $? -ne 0 ]; then
 	exit $?
 fi
 
+# Format in passwords file is: "name<s>url<u>userName<p>passwrod\n".
 name=$(grep ".*<s>" -o passwords.txt | sed -e "s:<s>::g" | dmenu)
 # if the user presses esc on dmenu.
 if [ "$?" != 0 ]; then
