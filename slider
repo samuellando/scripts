@@ -3,7 +3,8 @@
 # A Dmenu slider for volume, backlight, ect.
 #
 
-if [ $1 ]; then
+if [ $# -ge 1 ]; then
+	# Check that input is numeric.
 	if [ $(expr $1 + 1) ]; then
 		current=$1
 	else
@@ -13,7 +14,7 @@ else
 	current=50
 fi
 
-inc=1
+inc=1 # Boolean.
 while [ 1 ]; do
 	if [ $inc = 1 ]; then
 		in="$(printf "%s\n%s\n%s" "++" "--" $current | dmenu)"
@@ -30,6 +31,7 @@ while [ 1 ]; do
 	elif [ "$in" = "--" ]; then
 		inc=0
 		current=$(expr $current - 5)
+	# If a numeric input is passed.
 	elif [ $(expr $in + 1) ]; then
 		current=$in
 	fi
