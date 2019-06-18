@@ -4,17 +4,21 @@
 # Requires: dmenu
 #
 
-name=""
+# Set the volume to zero.
 volume 0
-bgwait=3600
-bglast=0
+# Parameters.
+name="" # Will be updated as needed.
+bgwait=3600 # How long to wait between background changes.
+bglast=0 # When the last background change occured.
 
+# Infinite loop.
 while true; do
 	# Check for background change.
 	if [ $(( $(date +%s) - $bglast )) -ge $bgwait ]; then
 		bglast=$( date +%s )
 		background ~/Pictures/backgrounds
 	fi
+	# Load all the parts.
 	pom="$(pomodoro status)"
 	cap="$(if [ "$(xset q | grep 'Caps Lock:   on')" != "" ]; then echo '[CAPS ON]';fi)"
 	bat="$(acpi | grep -E '(1|2|3|4|5|6|7|8|9|0)*%' -o)"
