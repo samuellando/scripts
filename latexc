@@ -1,0 +1,55 @@
+#!/bin/sh
+#
+# Manage and Compile a latex document.
+# Requires pdflatex, biber.
+#
+
+main="main"
+templates="~/Documents/masterWorkFolder/assets/"
+
+inclusionStart="% Start inclusions."
+inclusionEnd="% End inclusions."
+
+if [ "$1" = "" ]; then # Do a full compilation of main.tex
+  pdflatex "$main.tex"
+  biber $main
+  pdflatex "$main.tex"
+fi
+
+if [ "$1" = "-n" ]; then # Copy new main.tex
+  cp "$templates$main.tex" .
+fi
+
+if [ "$1" = "-c" ]; then # Create subsection files
+  if [ "$2" != "" ]; then
+    for i in $(seq $2); do
+      touch "$i.tex"
+    done
+  fi
+fi
+
+if [ "$1" = "-i" ]; then # Incluse subsections into main.tex
+  if [ "$2" != "" ]; then
+    s=$2
+    e=$3
+    l="\\\input"
+    if [ "$e" != "" ]; then
+      l="$l{$s.tex}\n"
+      s=$(($s + 1))
+    else
+      l="$l{1.tex}\n"
+      e=$s
+      s=2
+    fi
+    for i in $(seq $s $e); do
+      l="$l\\\include{$i}\n"
+    done
+    awkCommand="
+      /$inclusionStart/{print \$0;print incl;flag=1}
+      /$inclusionEnd/{flag=0}
+      !flag
+    "
+    awk -v incl="$l" "$awkCommand" "$main.tex" > tmp
+    mv tmp "$main.tex"
+  fi
+fi
