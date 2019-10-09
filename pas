@@ -1,8 +1,12 @@
 #!/bin/sh
 #
 # Access the users password vault.
-# Requires: dmenu, notify-send, xclip
 #
+# Requires: 
+#   - dmenu 
+#   - notify-send 
+#   - xclip 
+#   - xdotool
 
 cd ~/repos/pass
 ./decrypt
@@ -26,13 +30,17 @@ url=$(echo $info | sed -e "s:.*<s>::g" | sed -e "s:<u>.*::g")
 s=$(echo $info | sed -e "s:.*<u>::g" | sed -e "s:<p>.*::g")
 p=$(echo $info | sed -e "s:.*<p>::g")
 
-# If the user does not set the -p flag
-if [ "$1" != "--p" ]; then
+# If the user uses the --m flag
+if [ "$1" = "--m" ]; then
 	printf "%s" $s | xclip -selection clipboard -i
 	notify-send "pass" "Username coppied to clipboard"
 	sleep 5
+        printf "%s" $p | xclip -selection clipboard -i
+        notify-send "pass" "Password coppied to clipboard"
+        sleep 5
+        printf "" | xclip -selection clipboard -i
+        exit
 fi
-printf "%s" $p | xclip -selection clipboard -i
-notify-send "pass" "Password coppied to clipboard"
-sleep 5
-printf "" | xclip -selection clipboard -i
+xdotool type $s
+xdotool key Tab
+xdotool type $p

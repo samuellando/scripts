@@ -1,13 +1,17 @@
 #!/bin/sh
 #
 # Change the background to a random image in the specified directory.
-# Requires feh
 #
+# Requires: 
+#   -feh
 
-# Check that a directory has been passed.
-if [ $# -le 0 ]; then
-	echo "Please specify a directory."
-	exit
+# Defaults.
+d="$HOME/Pictures/backgrounds/"
+
+# Check that a directory has been passed, update $d.
+if [ $# -ge 1 ]; then
+  d=$1
 fi
+
 # Randomize the image from the given directory.
-feh --bg-scale --randomize $1
+feh --bg-scale --randomize $d

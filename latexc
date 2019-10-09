@@ -1,11 +1,12 @@
 #!/bin/sh
 #
 # Manage and Compile a latex document.
-# Requires pdflatex, biber.
-#
+# Requires:
+#   - pdflatex
+#   - biber
 
 main="main"
-templates="~/Documents/masterWorkFolder/assets/"
+templates="$HOME/Documents/masterWorkFolder/assets/"
 
 inclusionStart="% Start inclusions."
 inclusionEnd="% End inclusions."
@@ -28,7 +29,7 @@ if [ "$1" = "-c" ]; then # Create subsection files
   fi
 fi
 
-if [ "$1" = "-i" ]; then # Incluse subsections into main.tex
+if [ "$1" = "-i" ]; then # Include subsections into main.tex
   if [ "$2" != "" ]; then
     s=$2
     e=$3

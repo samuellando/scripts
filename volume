@@ -1,8 +1,10 @@
 #!/bin/sh
 #
 # A demnu slider for the volume, uses amixer.
-# Requires: amixer, dmenu
 #
+# Requires: 
+#   - amixer 
+#   - dmenu
 
 # Get current volume.
 current=$(amixer -c 1 sget Master | grep "[0123456789]*%" -o | sed -e "s/%//")

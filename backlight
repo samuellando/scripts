@@ -1,8 +1,8 @@
 #!/bin/sh
 #
 # A demnu slider for the backlight, uses udev.
-# Requires: dmenu
-#
+# Requires: 
+#   - dmenu
 
 # Flags and variables.
 backlightDir="/sys/class/backlight/intel_backlight/"	# Where the backlght values are stored.

@@ -1,8 +1,10 @@
 #!/bin/sh
 #
 # Promodoro timer script works with status bar script.
-# Requires: dmenu, notify-send
 #
+# Requires: 
+#   - dmenu 
+#   - notify-send
 
 # times in secounds. 
 brk=300

@@ -1,8 +1,10 @@
 #!/bin/sh
 #
 # Allow user to select a wifi profile.
-# Requires: netctl, dmenu
 #
+# Requires: 
+#   - netctl 
+#   - dmenu
 
 selection=$(netctl list | dmenu)
 if [ $? = 0 ]; then

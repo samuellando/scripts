@@ -1,10 +1,17 @@
 #!/bin/sh
 #
 # Begin screen capture.
-# Requires: ffmpeg
 #
+# Requires:
+#   - ffmpeg
 
-# Dont allow runing via dmenu, there must be the parameter indicateing the file name.
 if [ $1 ]; then
-	ffmpeg -f x11grab -video_size 1366x768 -framerate 25 -i $DISPLAY -c:v libx264 -preset ultrafast -c:a aac $1
+	ffmpeg\ 
+          -f x11grab\
+          -video_size 1366x768\
+          -framerate 25\
+          -i $DISPLAY\
+          -c:v libx264\
+          -preset ultrafast\
+          -c:a aac $1
 fi
