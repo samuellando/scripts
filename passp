@@ -1,0 +1,50 @@
+#!/bin/sh
+#
+# Access the users password vault.
+#
+# Requires: 
+#   - passp:
+#     - *
+#   - dmenu 
+#   - notify-send 
+#   - xclip 
+#   - xdotool
+
+passf=/tmp/pass.txt
+dir="$HOME/.passp"
+if ! [ -f /tmp/passwords.txt ]; then
+  pass=$(echo "pass" |  dmenu -nb black -nf black)
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
+
+  echo $pass | passp-password $passf &
+  passp-decrypt $passf $dir 600 &
+  sleep 0.5
+fi
+
+selection=$(passp-list | dmenu -i)
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+info=$(echo $selection | passp-get)
+
+name=$(echo $info | awk '{print $1}')
+url=$(echo $info | awk '{print $2}')
+login=$(echo $info | awk '{print $3}')
+p=$(echo $info | awk '{print $4}')
+
+# If the user uses the --m flag
+if [ "$1" = "--m" ]; then
+	printf "%s" $login | xclip -selection clipboard -i
+	notify-send "pass" "Username coppied to clipboard"
+	sleep 5
+        printf "%s" $p | xclip -selection clipboard -i
+        notify-send "pass" "Password coppied to clipboard"
+        sleep 5
+        printf "" | xclip -selection clipboard -i
+        exit
+fi
+xdotool type $login
+xdotool key Tab
+xdotool type $p
