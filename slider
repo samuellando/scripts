@@ -1,7 +1,6 @@
 #!/bin/sh
 #
 # A Dmenu slider for volume, backlight, ect.
-#
 
 if [ $# -ge 1 ]; then
 	# Check that input is numeric.
