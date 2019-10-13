@@ -23,11 +23,21 @@ if ! [ -f /tmp/passwords.txt ]; then
   sleep 0.5
 fi
 
+if [ "$1" = "--a" ]; then
+  name=$(echo "name" | dmenu)
+  url=$(echo "url" | dmenu)
+  login=$(echo "login" | dmenu)
+  p=$(echo "password" | dmenu -nb black -nf black)
+  passp-add $name $url $login $p
+  exit
+fi
+
+
 selection=$(passp-list | dmenu -i)
 if [ $? -ne 0 ]; then
   exit 1
 fi
-info=$(echo $selection | passp-get)
+info=$(passp-get $selection)
 
 name=$(echo $info | awk '{print $1}')
 url=$(echo $info | awk '{print $2}')
