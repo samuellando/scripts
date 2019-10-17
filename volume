@@ -17,7 +17,7 @@ fi
 # Set the new volume.
 if [ $current -le 0 ]; then
 	current=0
-elif [ $current -ge 100]; then
+elif [ $current -ge 100 ]; then
 	current=100
 fi
-amixer -c 1 sset Master $current
+amixer -c 1 sset Master $current%
