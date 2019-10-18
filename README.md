@@ -17,10 +17,10 @@ My  linux system scripts
   - Wrapper for maple.
 
 - passp
-  - Manage my passowrds, uses https://aur.archlinux.org/passp.git
+  - Manage my passowrds, uses https://aur.archlinux.org/packages/passp
 
 - pomodoro
-  - Pomodoro timer built in dmenu, needs to be converted into a package.
+  - Pomodoro timer built in dmenu, uses https://aur.archlinux.org/packages/pomodoro/
 
 - slider
   - Slider controller for volume and backlight.
