@@ -6,7 +6,7 @@
 #   - netctl 
 #   - dmenu
 
-selection=$(netctl list | dmenu)
+selection=$(netctl list | dmenu -i)
 if [ $? = 0 ]; then
 	sudo netctl stop-all
 	sudo netctl start $selection
