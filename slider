@@ -2,36 +2,39 @@
 #
 # A Dmenu slider for volume, backlight, ect.
 
-if [ $# -ge 1 ]; then
-	# Check that input is numeric.
-	if [ $(expr $1 + 1) ]; then
-		current=$1
-	else
-		exit
-	fi
-else
-	current=50
+if [ $# -le 2 ]; then
+  # Not enough parameters.
+  exit 1
 fi
+
+cmd=$1
+current=$2
+max=$3
+currentp=$(expr 100 \* $current / $max)
 
 inc=1 # Boolean.
 while [ 1 ]; do
 	if [ $inc = 1 ]; then
-		in="$(printf "%s\n%s\n%s" "++" "--" $current | dmenu)"
+		in="$(printf "%s\n%s\n%s" "++" "--" $currentp | dmenu)"
 	else
-		in="$(printf "%s\n%s\n%s" "--" "++" $current | dmenu)"
+		in="$(printf "%s\n%s\n%s" "--" "++" $currentp | dmenu)"
 	fi
 	if [ "$in" = "" ]; then
-		echo $current
 		break
 	fi
 	if [ "$in" = "++" ]; then
 		inc=1
-		current=$(expr $current + 5)
+		currentp=$(expr $currentp + 5)
 	elif [ "$in" = "--" ]; then
 		inc=0
-		current=$(expr $current - 5)
-	# If a numeric input is passed.
-	elif [ $(expr $in + 1) ]; then
-		current=$in
+		currentp=$(expr $currentp - 5)
 	fi
+        if [ $currentp -ge 100 ]; then
+          currentp=100
+        fi
+        if [ $currentp -le 0 ]; then
+          currentp=0
+        fi
+        current=$(expr $currentp \* $max / 100)
+        eval "$(echo $cmd | sed "s/<current>/$current/")"
 done

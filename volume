@@ -8,16 +8,5 @@
 
 # Get current volume.
 current=$(amixer -c 1 sget Master | grep "[0123456789]*%" -o | sed -e "s/%//")
-# Get new volume.
-if [ $# -ge 1 ]; then
-	current=$1
-else
-	current=$(slider $current)
-fi
-# Set the new volume.
-if [ $current -le 0 ]; then
-	current=0
-elif [ $current -ge 100 ]; then
-	current=100
-fi
-amixer -c 1 sset Master $current%
+
+slider 'amixer -c 1 sset Master <current>%' $current 100

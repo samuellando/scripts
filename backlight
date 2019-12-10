@@ -8,18 +8,9 @@
 backlightDir="/sys/class/backlight/intel_backlight/"	# Where the backlght values are stored.
 brightnessFile="brightness"				# Where the current backlight value is stored.
 maxFile="max_brightness"				# Where the max backlight value is stored.
+
 # Read the current configurations
 current="$(cat $backlightDir$brightnessFile)"		# Read the current brightness.
 max="$(cat $backlightDir$maxFile)"			# Read the maximum brightness.
-# Calculate the curent precentage.
-currentp=$(expr $current \* 100 / $max)
-# Get the new precentage.
-newp=$(slider $currentp)
-# Determine and set the new precentage.
-current=$(expr $newp \* $max / 100)
-if [ $current -le 0 ]; then
-	current=0
-elif [ $current -ge $max ]; then
-	current=$max
-fi
-echo $current > $backlightDir$brightnessFile
+
+slider "echo <current> > $backlightDir$brightnessFile" $current $max
