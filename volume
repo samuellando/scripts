@@ -6,7 +6,13 @@
 #   - amixer 
 #   - dmenu
 
+cmd='amixer -c 1 sset Master <current>%'
+
 # Get current volume.
 current=$(amixer -c 1 sget Master | grep "[0123456789]*%" -o | sed -e "s/%//")
 
-slider 'amixer -c 1 sset Master <current>%' $current 100
+if [ $# -ge 1 ]; then
+  eval "$(echo $cmd | sed 's/<current>/0/')"
+else
+  slider "$cmd" $current 100
+fi
