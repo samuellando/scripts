@@ -3,53 +3,28 @@
 # Access the users password vault.
 #
 # Requires: 
-#   - passp:
-#     - *
+#   - pass
 #   - dmenu 
 #   - notify-send 
 #   - xclip 
 #   - xdotool
 
-passf=/tmp/pass.txt
-dir="$HOME/.passp"
-if ! [ -f /tmp/passwords.txt ]; then
-  pass=$(echo "pass" |  dmenu -nb black -nf black)
-  if [ $? -ne 0 ]; then
-    exit 1
-  fi
 
-  echo $pass | passp-password $passf &
-  passp-decrypt $passf $dir 600 &
-  sleep 0.5
-fi
+options=$(find .password-store/ -type f -name \*.gpg | sed 's/\.gpg//; s/.password-store\///')
 
-if [ "$1" = "--a" ]; then
-  name=$(echo "name" | dmenu)
-  url=$(echo "url" | dmenu)
-  login=$(echo "login" | dmenu)
-  p=$(echo "password" | dmenu -nb black -nf black)
-  passp-add $name $url $login $p
-  exit
-fi
-
-
-selection=$(passp-list | dmenu -i)
+selection=$(printf "$options" | dmenu -i)
 if [ $? -ne 0 ]; then
   exit 1
 fi
-info=$(passp-get $selection)
 
-name=$(echo $info | awk '{print $1}')
-url=$(echo $info | awk '{print $2}')
-login=$(echo $info | awk '{print $3}')
-p=$(echo $info | awk '{print $4}')
+login=$(echo $selection | awk -F'/' '{print $3}')
 
 # If the user uses the --m flag
 if [ "$1" = "--m" ]; then
 	printf "%s" $login | xclip -selection clipboard -i
 	notify-send "pass" "Username coppied to clipboard"
 	sleep 5
-        printf "%s" $p | xclip -selection clipboard -i
+        pass -c $selection
         notify-send "pass" "Password coppied to clipboard"
         sleep 5
         printf "" | xclip -selection clipboard -i
@@ -57,4 +32,4 @@ if [ "$1" = "--m" ]; then
 fi
 xdotool type $login
 xdotool key Tab
-xdotool type $p
+xdotool type $(pass $selection)
