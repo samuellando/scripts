@@ -1,0 +1,19 @@
+#!/bin/sh
+#
+# Forntend for openvpn configuration
+#
+
+if [ $# -le 0 ]; then
+  echo "Use with c, d, s"
+  exit
+fi
+
+if [ "$1" == "c" ]; then
+  sudo systemctl start openvpn-client@vpn
+else
+  if [ "$1" == "d" ]; then
+    sudo systemctl stop openvpn-client@vpn
+  else 
+    systemctl status openvpn-client@vpn
+  fi
+fi
