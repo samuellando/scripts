@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# Create a periodic backup.
+
+include="
+$HOME/Documents/masterWorkFolder
+$HOME/.password-store
+$HOME/.ssh
+"
+
+name=$(date +%Y%m%d)
+
+tar -cf $name.tar --files-from=/dev/null
+for i in $include; do
+  echo "Adding $i"
+  tar -rf $name.tar $i
+done
+
+echo "Compressing with gzip"
+pv $name.tar | gzip > $name.tar.gz
+
+echo "Cleaning up"
+rm $name.tar
