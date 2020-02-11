@@ -1,0 +1,44 @@
+#!/bin/sh
+#
+# Update all the aur packages in ~/repos
+#
+
+cd ~/repos
+
+blacklist="update course pomodoro passp mathematica"
+
+targets=""
+for d in $(ls); do
+  # Skip over blacklisted directories.
+  skip=0
+  for b in $blacklist; do
+    if [ $d = $b ]; then
+      skip=1
+      break
+    fi
+  done
+  if [ $skip -ge 1 ]; then 
+    continue
+  fi
+  # Determine if its a aur repo.
+  cd $d
+  for f in $(ls); do
+    if [ "$f" = "PKGBUILD" ]; then
+      if [ $# -le 0 ]; then
+        printf "\033[32m$d\033[0m\n"
+        git fetch
+        git status | grep "Your branch is behind"
+      fi
+      if [ $? -le 0 ]; then
+        if [ $# -le 0 ]; then
+          git pull
+          makepkg -cs
+        fi
+        target=$d/$(ls $d*.tar.xz | sort -r | head -n 1)
+        targets="$targets $target"
+      fi
+    fi
+  done
+  cd ../
+done
+sudo pacman -U $targets

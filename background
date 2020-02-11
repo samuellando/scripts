@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Change the background to a random image in the specified directory.
+# Change the background to a random image in ~/Pictures/backgrounds.
 #
 # Requires: 
 #   -feh
