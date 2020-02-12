@@ -1,32 +1,32 @@
 # scripts
 My  linux system scripts 
 
-- background
-  - Set the background.
+all
+  - Start all my apps.
 
-- backlight
-  - Control the backlight.
+backup
+  - Create a backup of the documents.
 
-- course
-  - Manage my courses, uses https://aur.archlinux.org/packages/course/
+course
+  - dmenu frontend for my courses aur package.
 
-- latexc
-  - Manage latex progects, complie, include, create.
+latexc
+  - a frontend for pdflatex. 
 
-- maple
-  - Wrapper for maple.
+maple
+  - A maple launcher.
 
-- passp
-  - Manage my passowrds, uses https://aur.archlinux.org/packages/passp
+passp
+  - a dmenu frontend for pass.
 
-- pomodoro
-  - Pomodoro timer built in dmenu, uses https://aur.archlinux.org/packages/pomodoro/
+pomodoro
+  - a dmenu forntend for my pomodoro aur package.
 
-- slider
-  - Slider controller for volume and backlight.
+repo_update
+  - updates all packages in the ~/repo directory.
 
-- volume
-  - Control my volume.
+vpn
+  - Starts my vpn.
 
-- wifi
-  - Wrppaer for netctl.
+wifi
+  - a dmenu fornted for netctl.

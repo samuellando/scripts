@@ -8,6 +8,7 @@
 #   - notify-send 
 #   - xclip 
 #   - xdotool
+#
 
 
 options=$(find .password-store/ -type f -name \*.gpg | sed 's/\.gpg//; s/.password-store\///')
