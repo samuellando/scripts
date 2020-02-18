@@ -34,7 +34,7 @@ for d in $(ls); do
           git pull
           makepkg -cs
         fi
-        target=$d/$(ls $d*.tar.xz | sort -r | head -n 1)
+        target=$d/$(ls $d*.tar.xz | sort -r -V | head -n 1)
         targets="$targets $target"
       fi
     fi
