@@ -14,9 +14,7 @@
 options=$(find .password-store/ -type f -name \*.gpg | sed 's/\.gpg//; s/.password-store\///')
 
 selection=$(printf "$options" | dmenu -i)
-if [ $? -ne 0 ]; then
-  exit 1
-fi
+[ $? -ne 0 ] && exit 1
 
 login=$(echo $selection | awk -F'/' '{print $3}')
 
