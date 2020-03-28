@@ -1,0 +1,45 @@
+#!/bin/sh
+#
+# Like echo, but with gradients.
+#
+
+reset="\e[0m"
+
+min=0
+max=255
+inc=5
+
+r=$2
+g=$3
+b=$4
+
+rf=$5
+gf=$6
+bf=$7
+
+txt=$1
+len=${#txt}
+
+rinc=$(( ( rf - r ) / len ))
+ginc=$(( ( gf - g ) / len ))
+binc=$(( ( bf - b ) / len ))
+
+for i in $(seq 0 $len); do
+  [ $r -ge 255 ] && r=255
+  [ $g -ge 255 ] && g=255
+  [ $b -ge 255 ] && b=255
+
+  [ $r -le 0 ] && r=0
+  [ $g -le 0 ] && g=0
+  [ $b -le 0 ] && b=0
+
+  printf "\e[38;2;$r;$g;$(echo $b)m"
+
+  echo $txt | head -c $i | tail -c 1
+
+  r=$(( r + rinc ))
+  g=$(( g + ginc ))
+  b=$(( b + binc ))
+done
+
+printf "$reset\n"
