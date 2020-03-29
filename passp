@@ -16,7 +16,7 @@ options=$(find .password-store/ -type f -name \*.gpg | sed 's/\.gpg//; s/.passwo
 selection=$(printf "$options" | dmenu -i)
 [ $? -ne 0 ] && exit 1
 
-login=$(echo $selection | awk -F'/' '{print $3}')
+login=$(echo $selection | awk -F'/' '{print $NF}')
 
 # If the user uses the --m flag
 if [ "$1" = "--m" ]; then
