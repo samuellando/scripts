@@ -18,17 +18,32 @@ selection=$(printf "$options" | dmenu -i)
 
 login=$(echo $selection | awk -F'/' '{print $NF}')
 
-# If the user uses the --m flag
-if [ "$1" = "--m" ]; then
-	printf "%s" $login | xclip -selection clipboard -i
-	notify-send "pass" "Username coppied to clipboard"
-	sleep 5
-        pass -c $selection
-        notify-send "pass" "Password coppied to clipboard"
-        sleep 5
-        printf "" | xclip -selection clipboard -i
-        exit
+
+k=0
+while getopts ":up" opt; do
+  case $opt in
+    u)
+      k=1
+      printf "%s" $login | xclip -selection clipboard -i
+      notify-send "pass" "Username coppied to clipboard"
+      sleep 5
+      printf "" | xclip -selection clipboard -i
+      ;;
+    p)
+      k=1
+      pass -c $selection
+      [ $? -ne 0 ] && exit 1
+      notify-send "pass" "Password coppied to clipboard"
+      sleep 5
+      printf "" | xclip -selection clipboard -i
+      ;;
+    \?)
+      exit 1
+  esac
+done
+
+if [ $k = 0 ]; then
+  xdotool type $login
+  xdotool key Tab
+  xdotool type $(pass $selection)
 fi
-xdotool type $login
-xdotool key Tab
-xdotool type $(pass $selection)
