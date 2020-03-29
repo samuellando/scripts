@@ -5,7 +5,7 @@
 
 [ $# -le 0 ] && echo "Use with c, d, s" && exit
 
-[ "$1" == "c" ] && sudo systemctl start openvpn-client@vpn && exit
-[ "$1" == "d" ] && sudo systemctl stop openvpn-client@vpn && exit
+[ "$1" = "c" ] && sudo systemctl start openvpn-client@vpn && exit
+[ "$1" = "d" ] && sudo systemctl stop openvpn-client@vpn && exit
 
 systemctl status openvpn-client@vpn
