@@ -1,0 +1,5 @@
+#!/bin/sh
+
+librespot  -n spotifyd -u 12182944281 -p gc4vI8t4 &
+spt
+fg
