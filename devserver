@@ -1,0 +1,7 @@
+#!/bin/sh
+if [ -z "$1" ]; then
+  account="samuel.lando@aol.com"
+else
+  account="$1"
+fi
+rdesktop -g 100% -P -z -x l -r sound:on -u $account 24.203.247.32:3389

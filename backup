@@ -3,12 +3,9 @@
 # Create a periodic backup.
 
 include="
-$HOME/Documents/masterWorkFolder
+$HOME/Documents
 $HOME/.password-store
 $HOME/.ssh
-$HOME/.minecraft/backups
-$HOME/.minecraft/saves
-$HOME/.minecraft/screenshots
 "
 
 name=$(date +%Y%m%d)

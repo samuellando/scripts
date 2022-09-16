@@ -1,0 +1,14 @@
+#!/bin/sh
+
+echo "folder,favorite,type,name,notes,fields,login_uri,login_username,login_password,login_totp"
+
+logins=$(find .password-store/ -type f -name \*.gpg | sed 's/\.gpg//; s/.password-store\///')
+
+for login in $logins; do
+  folder=$(echo $login | awk '{split($0,a,"/"); print a[1]}')
+  name=$(echo $login | awk '{split($0,a,"/"); print a[length(a) - 1]}')
+  username=$(echo $login | awk '{split($0,a,"/"); print a[length(a)]}')
+  printf "$folder,,login,$name,,,,$username,\""
+  pass $login | head -c -1
+  printf "\",\n"
+done

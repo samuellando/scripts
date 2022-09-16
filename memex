@@ -1,0 +1,35 @@
+#!/bin/sh
+
+uid="samuel lando"
+nameLen=20
+tmp="/tmp/memex"
+dir="$HOME/Documents/memex"
+
+case "$1" in
+  -l)
+    all=""
+    i=0
+    for f in $(ls $dir); do
+      echo $(gpg -q -d $dir/$f)
+      i=$(($i+1))
+    done | sort | awk '{print ""; print $1; for (i=2; i<NF; i++) printf $i " "; print $NF}'
+    ;;
+  -c)
+    for f in $(ls $dir); do
+      c=$(gpg -q -d $dir/$f | wc -l)
+      if [ $c -le 1 ]; then
+        rm $dir/$f
+      fi
+    done
+    ;;
+  *)
+    filename=$(head -c $nameLen /dev/random | base32)
+    date=$(date +%s)
+
+    mkdir -p $tmp
+    echo "$date" > $tmp/$filename
+    vim $tmp/$filename
+
+    gpg -a -e -o- -r "$uid" $tmp/$filename > $dir/$filename.md.gpg
+    rm -r $tmp/$filename
+esac

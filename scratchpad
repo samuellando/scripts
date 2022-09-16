@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+id=$(xdotool search --class "scratchpad")
+if [[ $id ]]; then
+  if [[ $(bspc query -N -n $id.hidden) ]]; then
+    bspc node $id -g hidden=off
+  else
+    bspc node $id -g hidden=on
+  fi
+else
+  st -c scratchpad
+fi
