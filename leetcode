@@ -1,0 +1,12 @@
+#!/bin/sh
+
+d=$(pwd)
+cd ~/Documents/projects/CodeChallenges/problems
+
+mkdir "$*"
+cd "$*"
+nvim solution.py
+
+git add .
+git commit -am "$1"
+git push

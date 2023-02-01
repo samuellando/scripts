@@ -1,11 +1,25 @@
 #!/bin/sh
 
-acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
-  read -r status capacity
-  if [ "$status" = "Discharging" -a "$capacity" -lt 5 ]; then
-    systemctl hybrid-sleep
-  fi
-  if [ "$status" = "Discharging" -a "$capacity" -lt 90 ]; then
-    notify-send "Battery Low" "Battery is at $capacity%"
-  fi
+if [ $1 ]; then
+  loop=1
+else
+  loop=0
+fi
+
+action() {
+  acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
+    read -r status capacity
+    if [ "$status" = "Discharging" -a "$capacity" -lt 5 ]; then
+      systemctl hybrid-sleep
+    fi
+    if [ "$status" = "Discharging" -a "$capacity" -lt 20 ]; then
+      notify-send "Battery Low" "Battery is at $capacity%"
+    fi
+  }
 }
+
+action
+while [ $loop ]; do
+  sleep 60
+  action
+done
