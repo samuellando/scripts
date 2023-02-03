@@ -1,0 +1,22 @@
+#!/bin/python3
+
+import openai
+import os
+import sys
+import time
+
+openai.api_key = os.getenv("OPENAI_API_KEY")
+
+text=" ".join(sys.argv[1:])
+
+print(text)
+
+response = openai.Completion.create(model="text-davinci-003", prompt=text, temperature=0.5, max_tokens=250)
+
+r = response.choices[0].text
+file = "/tmp/david-" + str(time.time())
+
+with open(file, "w") as f:
+    f.write(r)
+
+os.system("st vim " + file)
