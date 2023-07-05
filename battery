@@ -1,14 +1,20 @@
 #!/bin/sh
 
+logger -p 7 -t battery "Started"
+
 if [ $1 ]; then
   loop=1
 else
   loop=0
 fi
 
+logger -p 7 -t battery "loop: $loop"
+
 action() {
   acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
     read -r status capacity
+    logger -p 7 -t battery "status: $status"
+    logger -p 7 -t battery "Capacity: $capacity"
     if [ "$status" = "Discharging" -a "$capacity" -lt 5 ]; then
       systemctl hybrid-sleep
     fi
@@ -19,7 +25,7 @@ action() {
 }
 
 action
-while [ $loop ]; do
+while [ $loop -ne 0 ]; do
   sleep 60
   action
 done
