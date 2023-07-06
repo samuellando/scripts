@@ -1,17 +1,6 @@
 #!/bin/sh
 
-logger -p 7 -t battery "Started"
-
-if [ $1 ]; then
-  loop=1
-else
-  loop=0
-fi
-
-logger -p 7 -t battery "loop: $loop"
-
-action() {
-  acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
+acpi -b | awk -F'[,:%]' '{print $2, $3}' | {
     read -r status capacity
     logger -p 7 -t battery "status: $status"
     logger -p 7 -t battery "Capacity: $capacity"
@@ -21,11 +10,4 @@ action() {
     if [ "$status" = "Discharging" -a "$capacity" -lt 20 ]; then
       notify-send "Battery Low" "Battery is at $capacity%"
     fi
-  }
 }
-
-action
-while [ $loop -ne 0 ]; do
-  sleep 60
-  action
-done
