@@ -2,36 +2,17 @@
 #
 # Create a periodic backup.
 
-workingDir="$HOME/.backuptmp"
+repoDir="$HOME/Backups"
 
 include="
-$HOME/Documents
-$HOME/.password-store
-$HOME/.ssh
+Documents
+.password-store
+.ssh
 "
 
-mkdir -p $workingDir
-
-name="$workingDir/$(date +%Y%m%d)"
-
-tar -cf $name.tar --files-from=/dev/null
 for i in $include; do
-  echo "Adding $i"
-  #tar -rf $name.tar $i
+    echo $i
+    borg create --stats $repoDir::{hostname}--$i-{now:%Y-%m-%d} $HOME/$i
 done
 
-echo "Compressing with gzip"
-pv $name.tar | gzip > $name.tar.gz
-
-echo "Cleaning up"
-rm $name.tar
-
-if [ "$1" = "--gcs" ]; then
-  last=$(cat "$workingDir/lastTimestamp")
-  if [[ $(($(date +%s) - $last)) -gt 86400 ]]; then 
-      echo "Uploading to GCS"
-      gsutil cp $name.tar.gz gs://samuellando-backup
-      rm $name.tar.gz
-      echo $(date +%s) > "$workingDir/lastTimestamp"
-  fi
-fi
+gsutil -m rsync -r ~/Backups gs://samuellando-backups
